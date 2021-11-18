@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using AngularSignalR.Data;
+using AngularSignalR.Hubs;
 using AngularSignalR.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,8 @@ namespace AngularSignalR
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddSignalR();
+            
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -39,6 +42,7 @@ namespace AngularSignalR
                 .AddIdentityServerJwt();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -76,6 +80,9 @@ namespace AngularSignalR
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                
+                endpoints.MapHub<ChatHub>("/chat");
+                
                 endpoints.MapRazorPages();
             });
 
